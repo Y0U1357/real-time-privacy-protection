@@ -4,7 +4,7 @@ numpy==1.26.4
 torch>=2.0
 torchvision>=0.15
 opencv-python<4.12
-onnx>=1.14
+onnx>=1.23.1
 onnxruntime>=1.16
 loguru
 thop
