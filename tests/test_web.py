@@ -28,6 +28,10 @@ from smoke_web import find_chrome, free_port, start_server  # noqa: E402
 
 PLACEHOLDER = re.compile(r"\?{3,}")
 TEXT_FILES = ("index.html", "selftest.html", "style.css")
+GENERATED_PAGE_ASSETS = {
+    "assets/shengli_night_market_cc0-processed-demo.gif":
+        ROOT / "docs" / "assets" / "shengli_night_market_cc0-processed-demo.gif",
+}
 
 # Which page each script is loaded from (DOM ids are checked against it).
 PAGE_OF_SCRIPT = {
@@ -88,8 +92,18 @@ class WiringTests(unittest.TestCase):
         for page in ("index.html", "selftest.html"):
             for asset in asset_pattern.findall(read(WEB / page)):
                 with self.subTest(page=page, asset=asset):
-                    self.assertTrue((WEB / asset).is_file(),
-                                    f"{page} references ./{asset} which does not exist")
+                    local_asset = WEB / asset
+                    if local_asset.is_file():
+                        continue
+                    generated_source = GENERATED_PAGE_ASSETS.get(asset)
+                    self.assertIsNotNone(
+                        generated_source,
+                        f"{page} references ./{asset} which does not exist",
+                    )
+                    self.assertTrue(
+                        generated_source.is_file(),
+                        f"generated Pages asset source is missing: {generated_source}",
+                    )
 
     def test_model_url_in_config_exists_or_is_documented_as_generated(self):
         config = read(WEB / "js" / "config.js")
