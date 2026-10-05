@@ -1,0 +1,26 @@
+[
+  {
+    "id": "mumbai_street_cc0",
+    "title": "Street in Mumbai (video) 01",
+    "commons_filename": "Street in Mumbai (video) 01.webm",
+    "source_page": "https://commons.wikimedia.org/wiki/File:Street_in_Mumbai_(video)_01.webm",
+    "license": "CC0 1.0 Universal",
+    "author": "Nicolas Vigier",
+    "duration_seconds": 22.0,
+    "resolution": "960x540",
+    "purpose": "Baseline pedestrian scene: detection, tracking continuity, Stable ID and privacy masking.",
+    "local_filename": "mumbai_street_cc0.webm"
+  },
+  {
+    "id": "shengli_night_market_cc0",
+    "title": "Shengli night market walk",
+    "commons_filename": "20251106 213507 Shengli night market walk (temp).webm",
+    "source_page": "https://commons.wikimedia.org/wiki/File:20251106_213507_Shengli_night_market_walk_(temp).webm",
+    "license": "CC0 1.0 Universal",
+    "author": "Saimmx",
+    "duration_seconds": 91.333,
+    "resolution": "1920x1080",
+    "purpose": "Dense-crowd/night stress test: occlusion, distant pedestrians, tracker load and privacy coverage.",
+    "local_filename": "shengli_night_market_cc0.webm"
+  }
+]

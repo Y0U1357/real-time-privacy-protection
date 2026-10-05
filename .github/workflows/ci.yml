@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  static-checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Bootstrap ONNX Runtime Web assets
+        run: python tools/setup_ort_web.py
+
+      - name: Compile Python support files
+        run: python -m compileall tools tests eval_wildtrack.py
+
+      - name: Run static repository checks
+        run: >-
+          python -m unittest
+          tests.test_web.TextIntegrityTests
+          tests.test_web.WiringTests
+          tests.test_docs
+          tests.test_benchmark_manifest
+          -v
+
+      - name: Run browser end-to-end smoke test
+        run: python tests/smoke_web.py
+
+      - name: Run portfolio benchmark smoke test
+        run: |
+          python tools/download_benchmark_videos.py --list
+          python tools/download_benchmark_videos.py --only mumbai_street_cc0
+          python tools/run_portfolio_benchmark.py --video-id mumbai_street_cc0 --seconds 5 --interval 1 --no-screenshot
