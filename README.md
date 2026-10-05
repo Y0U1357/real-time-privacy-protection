@@ -9,18 +9,6 @@ Browser-local person detection, tracking, and privacy masking with **YOLOX-S MOT
 **Live demo:** https://y0u1357.github.io/real-time-privacy-protection/
 
 
-### Demo clip
-
-<p align="center">
-  <img src="docs/assets/shengli_night_market_demo.gif"
-       alt="Shengli Night Market CC0 stress-test clip"
-       width="720">
-</p>
-
-<sub>4-second CC0 benchmark clip from the Shengli Night Market stress-test scene. The interactive browser demo above shows the full detection, tracking, Stable ID, and privacy pipeline.</sub>
-
-
-
 ### Visual evidence
 
 <table>
