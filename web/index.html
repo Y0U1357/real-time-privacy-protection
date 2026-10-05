@@ -16,7 +16,7 @@
       <p class="eyebrow">COMPUTER VISION · BROWSER LOCAL</p>
       <h1>Real-Time Privacy<br>Protection System</h1>
       <p class="subtitle">Detection, tracking and pixelation run in this tab.
-        No raw frame is ever uploaded.</p>
+        This application does not intentionally upload raw frames.</p>
     </div>
     <span id="camera-state" class="badge">Camera off</span>
   </header>
@@ -148,7 +148,7 @@
         <button id="art-export" type="button">Export JSON</button>
         <label class="file-picker">Import JSON <input id="art-import" type="file" accept=".json,application/json"></label>
       </div>
-      <p id="art-message" role="status">Settings apply locally to person regions. No image upload.</p>
+      <p id="art-message" role="status">Settings apply locally to person regions. No intentional image upload by this application.</p>
     </fieldset>
   </section>
 
@@ -165,10 +165,11 @@
     </dl>
     <p class="note">Pipeline: getUserMedia or a local video file → YOLOX ONNX inference
       → ByteTrack → canvas, all inside this tab. An imported file is read through a
-      <code>blob:</code> URL, so the file itself is never uploaded. The network
-      counter watches <code>fetch</code>, <code>XMLHttpRequest</code> and
+      <code>blob:</code> URL; this application does not intentionally upload the file. The network
+      counter observes <code>fetch</code>, <code>XMLHttpRequest</code> and
       <code>sendBeacon</code> since page load; a clean run shows
-      <strong>0 image/frame uploads</strong>.</p>
+      <strong>0 image/frame uploads</strong>. This counter is an observability aid,
+      not a network blocker.</p>
   </section>
 </main>
 <!-- Camera source: kept out of sight, drawn to the canvas every frame.

@@ -2,7 +2,7 @@
 
 Browser-local person detection, tracking, and privacy masking with **YOLOX-S MOT17**, **ByteTrack**, short-term **Stable ID** reassociation, privacy hold, and configurable pixelation.
 
-> 繁體中文摘要：這是一個在瀏覽器本機執行的人物隱私保護系統。Webcam 與本機影片會在分頁內完成偵測、追蹤與像素化；應用程式不會把原始影格上傳到後端。
+> 繁體中文摘要：這是一個在瀏覽器本機執行的人物隱私保護系統。Webcam 與本機影片會在分頁內完成偵測、追蹤與像素化；此應用程式的設計不會主動上傳原始影格。
 
 ## Live demo / portfolio
 
@@ -88,7 +88,7 @@ Canvas Output
 - Pause / Play / seek for local video.
 - Comparison, privacy, Stable ID, and overlay controls.
 - Runtime diagnostics for FPS, inference latency, tracks, render cost, and network activity.
-- Local video files use `blob:` URLs and are not uploaded by the application.
+- Local video files use `blob:` URLs; this application does not intentionally upload them.
 
 ## Repository layout
 
@@ -209,9 +209,9 @@ metrics to capture for a portfolio run.
 
 ## Privacy boundary
 
-Camera and local-video frames are processed in the current browser tab. `web/js/network-guard.js` monitors network APIs so the dashboard can surface unexpected requests; a normal run should report **0 image/frame uploads**.
+Camera and local-video frames are processed in the current browser tab. `web/js/network-guard.js` observes selected network APIs so the dashboard can surface unexpected requests; a normal run should report **0 image/frame uploads**.
 
-This is not a formal anonymity guarantee. Privacy coverage still depends on detector/tracker accuracy and runtime behavior.
+The network guard is an observability aid, not a network blocker, and does not inspect binary WebSocket payloads. This is not a formal anonymity guarantee. Privacy coverage still depends on detector/tracker accuracy, browser/runtime behavior, and the surrounding page environment.
 
 ## Documentation
 
