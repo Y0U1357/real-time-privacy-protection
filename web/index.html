@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Real-Time Privacy Protection System — Browser Local</title>
+<meta name="description" content="getUserMedia → YOLOX-S MOT17 (ONNX Runtime Web) person detection → ByteTrack → stable ID → 5% padding → block pixelation, entirely inside the browser.">
+<link rel="stylesheet" href="./style.css">
+<script src="./vendor/onnxruntime/ort.webgpu.min.js"></script>
+<script type="module" src="./js/app.js"></script>
+</head>
+<body>
+<main class="dashboard">
+  <header>
+    <div>
+      <p class="eyebrow">COMPUTER VISION · BROWSER LOCAL</p>
+      <h1>Real-Time Privacy<br>Protection System</h1>
+      <p class="subtitle">Detection, tracking and pixelation run in this tab.
+        No raw frame is ever uploaded.</p>
+    </div>
+    <span id="camera-state" class="badge">Camera off</span>
+  </header>
+
+  <p id="error" class="error" hidden role="alert"></p>
+
+  <section class="metrics" aria-label="System status">
+    <article><span>People</span><strong id="people">—</strong></article>
+    <article><span>FPS</span><strong id="fps">—</strong></article>
+    <article><span>Privacy Status</span><strong id="privacy-state">ON</strong></article>
+    <article><span>Stable ID</span><strong id="stable-state">ON</strong></article>
+    <article><span>Tracking Status</span><strong id="tracking-state">idle</strong></article>
+    <article><span>Model</span><strong id="model">Loading</strong>
+      <button id="model-retry" type="button" hidden>Retry Model</button></article>
+  </section>
+
+  <section class="viewer" aria-label="Camera output">
+    <div class="viewer-header">
+      <span>LOCAL CANVAS OUTPUT</span>
+      <span id="resolution">—</span>
+    </div>
+    <div class="stage">
+      <figure class="frame">
+        <canvas id="canvas" width="1280" height="720"
+                aria-label="Privacy-processed camera output"></canvas>
+        <figcaption>Processed</figcaption>
+        <p id="viewer-message" class="message">Loading the YOLOX-S MOT17 model…</p>
+      </figure>
+      <figure id="raw-wrap" class="frame" hidden>
+        <canvas id="raw-canvas" width="1280" height="720"
+                aria-label="Raw camera comparison output"></canvas>
+        <figcaption>Raw comparison</figcaption>
+      </figure>
+    </div>
+    <!-- Playback bar: shown only while an imported file is the source; a live
+         camera stream has no seekable timeline, so it stays hidden there. -->
+    <div id="video-playback-controls" class="playback" hidden>
+      <button id="video-pause-button" type="button" aria-label="Pause video">Pause</button>
+      <span id="video-current-time" class="playback-time">00:00</span>
+      <input id="video-timeline" type="range" min="0" max="0" step="0.01" value="0"
+             aria-label="Video timeline">
+      <span id="video-duration" class="playback-time">00:00</span>
+    </div>
+    <div class="controls">
+      <div class="model">
+        <span class="label">MODEL</span>
+        <p>YOLOX-S MOT17 (ONNX, person) · ONNX Runtime Web · WebGPU with WASM
+          fallback · weights served from <code>./models</code></p>
+      </div>
+      <div class="buttons">
+        <button id="start-button" type="button" class="primary">Start Camera</button>
+        <button id="stop-button" type="button" disabled>Stop Camera</button>
+        <label class="file-picker" for="video-input">
+          <input id="video-input" type="file" accept="video/*" aria-label="Load a video file">
+          <span id="video-name">Load MP4 / WebM</span>
+        </label>
+        <button id="privacy-button" type="button" aria-pressed="true">Privacy ON</button>
+        <button id="stable-button" type="button" aria-pressed="true">Stable ID ON</button>
+        <button id="overlay-button" type="button" aria-pressed="true">Boxes &amp; IDs ON</button>
+        <button id="comparison-button" type="button" aria-pressed="false">Comparison OFF</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel" aria-labelledby="tuning-title">
+    <div class="panel-heading">
+      <div>
+        <p class="eyebrow">LIVE TUNING</p>
+        <h2 id="tuning-title">Privacy Tuning</h2>
+        <p class="hint">Applies on the next frame — nothing is rebuilt.
+          Ranges: padding 0–0.30 step 0.01 · pixel scale 0.02–0.50 step 0.01 ·
+          hold 0–30 ticks step 1.</p>
+      </div>
+      <button id="tuning-reset" type="button">Reset Defaults</button>
+    </div>
+    <div class="grid">
+      <label class="setting" for="padding-input">
+        <span>Padding <output id="padding-value">5%</output></span>
+        <input id="padding-input" type="range" min="0" max="0.3" step="0.01" value="0.05">
+        <small>Margin added around each person box before pixelation.</small>
+      </label>
+      <label class="setting" for="scale-input">
+        <span>Pixel scale <output id="scale-value">8%</output></span>
+        <input id="scale-input" type="range" min="0.02" max="0.5" step="0.01" value="0.08">
+        <small>Block edge is 1/scale pixels (8% → about 12 px blocks).</small>
+      </label>
+      <label class="setting" for="hold-input">
+        <span>Privacy hold <output id="hold-value">5</output></span>
+        <input id="hold-input" type="range" min="0" max="30" step="1" value="5">
+        <small>Detection ticks a lost person stays pixelated after disappearing.</small>
+      </label>
+      <label class="setting" for="style-select">
+        <span>Pixelation style</span>
+        <select id="style-select">
+          <option value="block" selected>Block (fast path)</option>
+          <option value="retro">Pixel Art (palette + dithering)</option>
+        </select>
+        <small>Retro quantises the small ROI only; block needs no pixel reads.</small>
+      </label>
+    </div>
+    <fieldset id="pixel-art-controls" hidden>
+      <legend>Pixel Art Settings</legend>
+      <div class="grid">
+        <label class="setting">Dithering
+          <select id="art-dither">
+            <option value="none">None</option><option value="bayer2">2x2 Bayer</option>
+            <option value="bayer4" selected>4x4 Bayer</option><option value="bayer8">8x8 Bayer</option>
+            <option value="ordered">Ordered</option><option value="clustered">Clustered 4x4</option>
+            <option value="floyd">Floyd-Steinberg</option><option value="atkinson">Atkinson</option>
+          </select>
+        </label>
+        <label class="setting">Dither strength <output id="art-strength-value">20%</output>
+          <input id="art-strength" type="range" min="0" max="100" step="1" value="20">
+        </label>
+        <label class="setting">Palette preset
+          <select id="art-preset"><option value="default">Original 8</option>
+            <option value="mono">Black and white</option><option value="green">Green 4</option>
+            <option value="custom">Custom</option></select>
+        </label>
+        <label class="setting">Custom palette (2-16 hex colors)
+          <textarea id="art-palette" rows="3" aria-describedby="art-message"></textarea>
+        </label>
+      </div>
+      <div id="art-swatches" aria-label="Current palette"></div>
+      <div class="buttons">
+        <button id="art-apply" type="button">Apply Palette</button>
+        <button id="art-save" type="button">Save Palette</button>
+        <button id="art-load" type="button">Load Saved Palette</button>
+        <button id="art-export" type="button">Export JSON</button>
+        <label class="file-picker">Import JSON <input id="art-import" type="file" accept=".json,application/json"></label>
+      </div>
+      <p id="art-message" role="status">Settings apply locally to person regions. No image upload.</p>
+    </fieldset>
+  </section>
+
+  <section class="panel" aria-labelledby="diag-title">
+    <p class="eyebrow">DIAGNOSTICS</p>
+    <h2 id="diag-title">Local-only verification</h2>
+    <dl class="diagnostics">
+      <div><dt>Detector</dt><dd id="diag-detector">—</dd></div>
+      <div><dt>Tracks</dt><dd id="diag-tracks">—</dd></div>
+      <div><dt>Render</dt><dd id="diag-render">—</dd></div>
+      <div><dt>Stable IDs</dt><dd id="diag-ids">—</dd></div>
+      <div><dt>Device</dt><dd id="diag-device">—</dd></div>
+      <div><dt>Network</dt><dd id="diag-network">0 requests · 0 with body · 0 image/frame uploads</dd></div>
+    </dl>
+    <p class="note">Pipeline: getUserMedia or a local video file → YOLOX ONNX inference
+      → ByteTrack → canvas, all inside this tab. An imported file is read through a
+      <code>blob:</code> URL, so the file itself is never uploaded. The network
+      counter watches <code>fetch</code>, <code>XMLHttpRequest</code> and
+      <code>sendBeacon</code> since page load; a clean run shows
+      <strong>0 image/frame uploads</strong>.</p>
+  </section>
+</main>
+<!-- Camera source: kept out of sight, drawn to the canvas every frame.
+     Not muted by default: a picked file plays with its own audio, and the
+     camera path has no audio track at all. CameraSource falls back to muted
+     if the browser's autoplay policy refuses an audible start. -->
+<video id="camera" playsinline preload="auto" aria-hidden="true"></video>
+</body>
+</html>

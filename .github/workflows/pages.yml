@@ -1,0 +1,95 @@
+name: Deploy GitHub Pages
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - "web/index.html"
+      - "web/selftest.html"
+      - "web/style.css"
+      - "web/js/**"
+      - "web/models/*.onnx"
+      - "tools/setup_ort_web.py"
+      - ".github/workflows/pages.yml"
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+  deployments: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Setup ONNX Runtime Web
+        run: python tools/setup_ort_web.py
+
+      - name: Verify YOLOX model
+        run: |
+          test -f web/models/yolox_s_mot17.onnx || {
+            echo "Missing web/models/yolox_s_mot17.onnx"
+            exit 1
+          }
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./web
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: build
+
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+  cleanup-old-deployments:
+    runs-on: ubuntu-latest
+    needs: deploy
+    if: ${{ always() && needs.deploy.result == 'success' }}
+    permissions:
+      contents: read
+      deployments: write
+    steps:
+      - name: Keep only the newest GitHub Pages deployment
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          mapfile -t ids < <(
+            gh api "repos/$REPO/deployments?environment=github-pages&per_page=100"               --jq 'sort_by(.created_at) | reverse | .[].id'
+          )
+          if [ "${#ids[@]}" -le 1 ]; then
+            exit 0
+          fi
+          for id in "${ids[@]:1}"; do
+            gh api --method POST "repos/$REPO/deployments/$id/statuses" -f state=inactive >/dev/null || true
+            gh api --method DELETE "repos/$REPO/deployments/$id" >/dev/null || true
+          done

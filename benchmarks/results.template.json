@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "note": "Template only. Replace nulls with values from an actual browser run.",
+  "video_id": "mumbai_street_cc0",
+  "environment": {
+    "browser": null,
+    "os": null,
+    "backend": null,
+    "device": null
+  },
+  "metrics": {
+    "average_video_fps": null,
+    "average_detector_fps": null,
+    "average_inference_ms": null,
+    "average_render_ms": null,
+    "peak_people": null,
+    "peak_tracks": null,
+    "peak_privacy_regions": null,
+    "image_frame_uploads": null
+  }
+}

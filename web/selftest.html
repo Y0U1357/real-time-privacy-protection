@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pipeline Self-Test — Real-Time Privacy Protection System</title>
+<link rel="stylesheet" href="./style.css">
+<script type="module" src="./js/selftest.js"></script>
+</head>
+<body>
+<main class="dashboard">
+  <header>
+    <div>
+      <p class="eyebrow">AUTOMATED CHECKS</p>
+      <h1>Pipeline self-test</h1>
+      <p class="subtitle">Runs the real geometry, tracker, stable-ID, pixelation
+        and renderer modules with synthetic detections — no camera, no model,
+        no network.</p>
+    </div>
+    <span id="summary" class="badge">Running…</span>
+  </header>
+
+  <section class="panel" aria-label="Self-test results">
+    <ul id="results" class="results"></ul>
+    <p class="note">Open this page directly, or from the repo root run
+      <code>py tests/test_web.py</code>, which executes it headlessly.</p>
+  </section>
+</main>
+</body>
+</html>

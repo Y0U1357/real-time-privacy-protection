@@ -1,0 +1,51 @@
+{
+  "checkpoint_sha256": "d224bf37c20a9966b44052d2452e6cd5327c7dab9fe9977a649bbad1b76ba220",
+  "model_sha256": "926701b79621323007642fc356e9af68a3636b0559e58d6fb90cda965fa902b1",
+  "input": [
+    1,
+    3,
+    544,
+    960
+  ],
+  "output": [
+    1,
+    10710,
+    6
+  ],
+  "dtype": "float32",
+  "mean": [
+    0.485,
+    0.456,
+    0.406
+  ],
+  "std": [
+    0.229,
+    0.224,
+    0.225
+  ],
+  "padding": 114,
+  "placement": "top-left",
+  "strides": [
+    8,
+    16,
+    32
+  ],
+  "confidence": 0.05,
+  "nms": 0.7,
+  "decoded": true,
+  "fused": true,
+  "opset": 17,
+  "checks": [
+    {
+      "case": "synthetic",
+      "max_raw_error": 0.00390625,
+      "people_candidates": 0,
+      "max_box_error_px": 0
+    }
+  ],
+  "source": {
+    "repository": "https://github.com/FoundationVision/ByteTrack",
+    "model_zoo": "https://github.com/FoundationVision/ByteTrack#model-zoo",
+    "checkpoint_name": "bytetrack_s_mot17"
+  }
+}
