@@ -57,9 +57,10 @@ They are downloaded during local setup and GitHub Pages builds with:
 python tools/setup_ort_web.py
 ```
 
-The setup script pins ONNX Runtime Web version `1.23.2`, downloads the upstream
-npm tarball, copies the required `.js` / `.mjs` / `.wasm` files, and also
-retrieves upstream `LICENSE` and `ThirdPartyNotices.txt`.
+The setup script pins ONNX Runtime Web version `1.23.2`, verifies the downloaded
+npm tarball against its checked-in SHA-512 SRI value before extraction, copies
+the required `.js` / `.mjs` / `.wasm` files, and also retrieves upstream
+`LICENSE` and `ThirdPartyNotices.txt`.
 
 These generated runtime files are ignored by Git because the Pages workflow
 recreates them during deployment.

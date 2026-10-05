@@ -23,6 +23,8 @@ channel for security-sensitive reports.
 - Do not commit secrets, private keys, local media, or private datasets.
 - Keep `.env*`, keys, checkpoints, and local benchmark video files ignored.
 - Keep GitHub Actions permissions at least privilege.
+- Pin third-party GitHub Actions to full commit SHAs; use Dependabot to propose updates.
+- Verify downloaded browser runtime archives against the checked-in package integrity value before extraction.
 - Treat PyTorch checkpoints as executable/untrusted input because `torch.load`
   deserializes Python objects.
 - Preserve third-party license and attribution files when redistributing.
