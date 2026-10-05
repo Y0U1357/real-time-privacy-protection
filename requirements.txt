@@ -1,7 +1,7 @@
 # Python support for ONNX export / WildTrack evaluation.
 # Browser runtime dependencies are downloaded separately by tools/setup_ort_web.py.
 numpy==1.26.4
-torch>=2.0
+torch>=2.14.1
 torchvision>=0.15
 opencv-python<4.12
 onnx>=1.14
