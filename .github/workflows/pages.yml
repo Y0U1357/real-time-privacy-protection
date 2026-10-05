@@ -9,6 +9,7 @@ on:
       - "web/style.css"
       - "web/js/**"
       - "web/models/*.onnx"
+      - "docs/assets/shengli_night_market_cc0-processed-demo.gif"
       - "tools/setup_ort_web.py"
       - ".github/workflows/pages.yml"
 
@@ -47,6 +48,13 @@ jobs:
             echo "Missing web/models/yolox_s_mot17.onnx"
             exit 1
           }
+
+      - name: Stage processed demo asset
+        run: |
+          mkdir -p web/assets
+          cp docs/assets/shengli_night_market_cc0-processed-demo.gif \
+             web/assets/shengli_night_market_cc0-processed-demo.gif
+          test -s web/assets/shengli_night_market_cc0-processed-demo.gif
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5

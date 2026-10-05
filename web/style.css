@@ -113,6 +113,77 @@ code { font-family: var(--mono); font-size: .92em; color: #bcd3f0; }
   white-space: nowrap;
 }
 
+/* Processed demo preview --------------------------------------------- */
+.demo-preview {
+  display: grid;
+  grid-template-columns: minmax(0, .9fr) minmax(360px, 1.1fr);
+  gap: 20px;
+  align-items: center;
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: linear-gradient(135deg, #0e1723, var(--panel));
+}
+
+.demo-preview-copy { min-width: 0; }
+.demo-preview-copy h2 {
+  margin: 4px 0 10px;
+  font-size: clamp(20px, 2.5vw, 28px);
+  line-height: 1.2;
+}
+
+.demo-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+  margin-top: 16px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.demo-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 9px 15px;
+  border: 1px solid var(--accent);
+  border-radius: 10px;
+  background: var(--accent);
+  color: #04120e;
+  text-decoration: none;
+  font-weight: 650;
+}
+
+.demo-link:hover { background: #48e0b6; }
+.demo-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+.demo-steps {
+  margin: 16px 0 0;
+  color: #cfe0f4;
+  font-size: 13px;
+}
+
+.demo-preview-media {
+  margin: 0;
+  min-width: 0;
+}
+
+.demo-preview-media img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #05080e;
+}
+
+.demo-preview-media figcaption {
+  margin-top: 7px;
+}
+
+#interactive-demo { scroll-margin-top: 16px; }
+
 /* Viewer ------------------------------------------------------------- */
 .viewer,
 .panel {
@@ -435,6 +506,7 @@ select {
 
 /* Responsive --------------------------------------------------------- */
 @media (max-width: 1080px) {
+  .demo-preview { grid-template-columns: minmax(0, 1fr); }
   .metrics { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .diagnostics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -442,6 +514,9 @@ select {
 
 @media (max-width: 720px) {
   .dashboard { padding: 18px 12px 0; }
+  .demo-preview { padding: 14px; }
+  .demo-actions { align-items: stretch; flex-direction: column; }
+  .demo-link { width: 100%; }
   header { flex-direction: column; }
   .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .grid, .diagnostics { grid-template-columns: minmax(0, 1fr); }
