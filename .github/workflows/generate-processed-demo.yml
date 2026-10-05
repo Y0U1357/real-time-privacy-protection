@@ -1,0 +1,58 @@
+name: Generate Processed Demo GIF
+
+on:
+  push:
+    branches:
+      - feat/capture-processed-demo-gif
+    paths:
+      - "tools/capture_processed_demo_gif.py"
+      - ".github/workflows/generate-processed-demo.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  generate:
+    if: ${{ !contains(github.event.head_commit.message, '[skip demo gif]') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4
+        with:
+          ref: feat/capture-processed-demo-gif
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install GIF dependency
+        run: python -m pip install Pillow
+
+      - name: Setup ONNX Runtime Web
+        run: python tools/setup_ort_web.py
+
+      - name: Download CC0 demo video
+        run: python tools/download_benchmark_videos.py --only shengli_night_market_cc0
+
+      - name: Generate processed demo GIF
+        run: >-
+          python tools/capture_processed_demo_gif.py
+          --video-id shengli_night_market_cc0
+          --seconds 4
+          --fps 6
+          --width 720
+
+      - name: Commit generated GIF
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/assets/shengli_night_market_cc0-processed-demo.gif
+          if git diff --cached --quiet; then
+            echo "No GIF change to commit."
+            exit 0
+          fi
+          git commit -m "docs: add processed browser demo GIF [skip demo gif]"
+          git push origin HEAD:feat/capture-processed-demo-gif
