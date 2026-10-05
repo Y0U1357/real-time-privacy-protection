@@ -21,6 +21,29 @@
     <span id="camera-state" class="badge">Camera off</span>
   </header>
 
+  <section class="demo-preview" aria-labelledby="demo-preview-title">
+    <div class="demo-preview-copy">
+      <p class="eyebrow">PROCESSED DEMO</p>
+      <h2 id="demo-preview-title">See the privacy pipeline before granting camera access</h2>
+      <p class="hint">This 4-second preview is captured from the real browser output after
+        YOLOX-S MOT17 detection, ByteTrack, Stable ID, privacy hold, and pixelation.</p>
+      <div class="demo-actions">
+        <a class="demo-link" href="#interactive-demo">Try the interactive demo</a>
+        <span>No camera permission is needed to watch this preview.</span>
+      </div>
+      <p class="demo-steps"><strong>Interactive use:</strong> wait for the Model card to show
+        <code>YOLOX-S MOT17</code>, then choose <strong>Start Camera</strong> or
+        <strong>Load MP4 / WebM</strong>. Camera and local-video frames are processed
+        in this browser tab.</p>
+    </div>
+    <figure class="demo-preview-media">
+      <img src="./assets/shengli_night_market_cc0-processed-demo.gif"
+           alt="Processed Shengli Night Market clip showing tracked people with privacy pixelation"
+           width="720" height="405" loading="eager" fetchpriority="high">
+      <figcaption>Real processed canvas output · CC0 Shengli Night Market benchmark</figcaption>
+    </figure>
+  </section>
+
   <p id="error" class="error" hidden role="alert"></p>
 
   <section class="metrics" aria-label="System status">
@@ -33,9 +56,9 @@
       <button id="model-retry" type="button" hidden>Retry Model</button></article>
   </section>
 
-  <section class="viewer" aria-label="Camera output">
+  <section id="interactive-demo" class="viewer" aria-label="Interactive camera and local-video output">
     <div class="viewer-header">
-      <span>LOCAL CANVAS OUTPUT</span>
+      <span>INTERACTIVE DEMO · LOCAL CANVAS OUTPUT</span>
       <span id="resolution">—</span>
     </div>
     <div class="stage">
