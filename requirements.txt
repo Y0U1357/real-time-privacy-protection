@@ -2,7 +2,7 @@
 # Browser runtime dependencies are downloaded separately by tools/setup_ort_web.py.
 numpy==1.26.4
 torch>=2.0
-torchvision>=0.15
+torchvision>=0.29.1
 opencv-python<4.12
 onnx>=1.14
 onnxruntime>=1.16
