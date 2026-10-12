@@ -5,6 +5,6 @@ torch>=2.0
 torchvision>=0.15
 opencv-python<4.12
 onnx>=1.14
-onnxruntime>=1.16
+onnxruntime>=1.31.0
 loguru
 thop
